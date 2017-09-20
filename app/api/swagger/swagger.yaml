@@ -1,0 +1,400 @@
+swagger: "2.0"
+info:
+  description: "This is the simple API for the Match Making service."
+  version: "1.0.0"
+  title: "MatchMaker"
+host: "localhost:5000"
+basePath: "/api/v1"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+- "text/plain"
+tags:
+- name: "gameMode"
+  description: "Information about game modes"
+- name: "queue"
+  description: "Information about queues"
+- name: "playerRanking"
+  description: "Information about players' match making ranking"
+- name: "party"
+  description: "Information about matches"
+schemes:
+- "http"
+paths:
+  /gameModes:
+    x-swagger-router-controller: "game_modes"
+    get:
+      tags:
+      - "gameMode"
+      summary: "View information about all game modes"
+      description: "Returns all game modes"
+      operationId: "getGameModes"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/GameMode"
+        400:
+          description: "Invalid request"
+    post:
+      tags:
+      - "gameMode"
+      summary: "Add a new game mode"
+      description: "Add a new game mode"
+      operationId: "addGameMode"
+      parameters:
+      - name: "gameMode"
+        in: "body"
+        description: "New game mode to add"
+        required: true
+        schema:
+          $ref: "#/definitions/GameMode"
+      responses:
+        201:
+          description: "Game mode created successfully"
+          schema:
+            $ref: "#/definitions/GameMode"
+  /gameModes/{gameModeId}:
+    x-swagger-router-controller: "game_modes"
+    get:
+      tags:
+      - "gameMode"
+      summary: "View information about a specific game mode"
+      description: "Returns a game mode"
+      operationId: "getGameMode"
+      parameters:
+      - $ref: "#/parameters/gameModeId"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GameMode"
+        400:
+          description: "Invalid request"
+        404:
+          description: "Game mode not found"
+    patch:
+      tags:
+      - "gameMode"
+      summary: "Update game mode"
+      description: "Enable or Disable a game mode."
+      operationId: "updateGameMode"
+      parameters:
+      - $ref: "#/parameters/gameModeId"
+      - in: "body"
+        name: "gameMode"
+        description: "Updated game mode object"
+        required: true
+        schema:
+          $ref: "#/definitions/GameMode"
+      responses:
+        204:
+          description: "successful operation"
+        400:
+          description: "Invalid game mode supplied"
+        404:
+          description: "Game mode not found"
+  /gameModes/{gameModeId}/queues:
+    x-swagger-router-controller: "queues"
+    get:
+      tags:
+      - "queue"
+      summary: "View information about all queues for the requested game mode"
+      description: "Returns all queues for a specified game mode"
+      operationId: "getQueuesForGameMode"
+      parameters:
+      - $ref: "#/parameters/gameModeId"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Queue"
+        400:
+          description: "Invalid request"
+        404:
+          description: "Queue not found"
+    post:
+      tags:
+      - "queue"
+      summary: "Add a new queue"
+      description: "Add a new queue"
+      operationId: "addQueue"
+      parameters:
+      - $ref: "#/parameters/gameModeId"
+      - in: "body"
+        name: "queue"
+        description: "The queue to add"
+        required: true
+        schema:
+          $ref: "#/definitions/Queue"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid request"
+  /queues:
+      x-swagger-router-controller: "queues"
+      get:
+        tags:
+        - "queue"
+        summary: "View all queues"
+        description: "Returns an array of queues"
+        operationId: "getQueues"
+        responses:
+          200:
+            description: "successful operation"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/Queue"
+          400:
+            description: "Invalid request"
+  /queues/{queueId}:
+    x-swagger-router-controller: "queues"
+    get:
+      tags:
+      - "queue"
+      summary: "View information about a specific queue"
+      description: "Returns a queue"
+      operationId: "getQueue"
+      parameters:
+      - $ref: "#/parameters/queueId"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Queue"
+        400:
+          description: "Invalid request"
+        404:
+          description: "Queue not found"
+    patch:
+      tags:
+      - "queue"
+      summary: "Update queue"
+      description: "Enable or Disable a queue."
+      operationId: "updateQueue"
+      parameters:
+      - $ref: "#/parameters/queueId"
+      - in: "body"
+        name: "queue"
+        description: "Updated queue object"
+        required: true
+        schema:
+          $ref: "#/definitions/Queue"
+      responses:
+        204:
+          description: "successful operation"
+        400:
+          description: "Invalid queue supplied"
+        404:
+          description: "Queue not found"
+  /playerRankings:
+    x-swagger-router-controller: "player_rankings"
+    get:
+      tags:
+      - "playerRanking"
+      summary: "View information about all players' match making rankings"
+      operationId: "getPlayerRankings"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PlayerRanking"
+        400:
+          description: "Invalid request"
+    post:
+      tags:
+      - "playerRanking"
+      summary: "Create a new player ranking record for the given player"
+      operationId: "addPlayerRanking"
+      parameters:
+      - name: "playerRanking"
+        in: "body"
+        description: "Player ranking object to add"
+        required: true
+        schema:
+          $ref: "#/definitions/PlayerRanking"
+      responses:
+        201:
+          description: "Player Ranking created successfully"
+          schema:
+            $ref: "#/definitions/PlayerRanking"
+  /playerRankings/{playerRankingId}:
+    x-swagger-router-controller: "player_rankings"
+    get:
+      tags:
+      - "playerRanking"
+      summary: "View information about a specific player's ranking"
+      description: "Returns a PlayerRanking record"
+      operationId: "getPlayerRanking"
+      parameters:
+      - $ref: "#/parameters/playerRankingId"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/PlayerRanking"
+        400:
+          description: "Invalid request"
+        404:
+          description: "Player Ranking not found"
+    patch:
+      tags:
+      - "playerRanking"
+      summary: "Update player ranking"
+      operationId: "updatePlayerRanking"
+      parameters:
+      - $ref: "#/parameters/playerRankingId"
+      - in: "body"
+        name: "playerRanking"
+        description: "Updated player ranking object"
+        required: true
+        schema:
+          $ref: "#/definitions/PlayerRanking"
+      responses:
+        204:
+          description: "successful operation"
+        400:
+          description: "Invalid player ranking supplied"
+        404:
+          description: "Player ranking not found"
+  /queues/{queueId}/parties:
+    x-swagger-router-controller: "parties"
+    get:
+      tags:
+      - "party"
+      summary: "View information about all parties currently queued or waiting to queue for the given queue"
+      description: "Returns all parties for a specified queue"
+      operationId: "getPartiesForQueue"
+      parameters:
+      - $ref: "#/parameters/queueId"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Party"
+        400:
+          description: "Invalid request"
+        404:
+          description: "Parties not found"
+    post:
+      tags:
+      - "party"
+      summary: "Add a new party"
+      description: "Add a new party"
+      operationId: "addParty"
+      parameters:
+      - $ref: "#/parameters/queueId"
+      - in: "body"
+        name: "party"
+        description: "The party to add"
+        required: true
+        schema:
+          $ref: "#/definitions/Party"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid request"
+definitions:
+  GameMode:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      enabled:
+        type: "boolean"
+      createdAt:
+        type: "string"
+        format: "date-time"
+  Queue:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      enabled:
+        type: "boolean"
+      gameModeId:
+        type: "string"
+        format: "uuid"
+      createdAt:
+        type: "string"
+        format: "date-time"
+  PlayerRanking:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      mmr:
+        type: "integer"
+        format: "int32"
+      wins:
+        type: "integer"
+        format: "int32"
+      losses:
+        type: "integer"
+        format: "int32"
+      hotStreak:
+        type: "boolean"
+      playerName:
+        type: "string"
+  Party:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      mmr:
+        type: "integer"
+        format: "int32"
+      hostId:
+        type: "string"
+        format: "uuid"
+      playerIds:
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+parameters:
+  gameModeId:
+    name: "gameModeId"
+    in: "path"
+    description: "ID of game mode to query"
+    required: true
+    type: "string"
+    format: "uuid"
+  queueId:
+    name: "queueId"
+    in: "path"
+    description: "ID of queue to query"
+    required: true
+    type: "string"
+    format: "uuid"
+  playerRankingId:
+    name: "playerRankingId"
+    in: "path"
+    description: "ID of player ranking to query"
+    required: true
+    type: "string"
+    format: "uuid"
